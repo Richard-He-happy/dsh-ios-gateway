@@ -1,0 +1,6 @@
+- insert:
+    - id: ios-gateway
+      name: dsh-ios-gateway
+      config:
+        autoStart: true
+        port: 50108

@@ -88,16 +88,38 @@ function cacheGzip(key, buffer) {
 
 /* ---------- Tailscale address ---------- */
 
+let tailscaleCandidatesCache;
+
+function registryTailscaleDir() {
+  try {
+    const out = execFileSync('reg', ['query', 'HKLM\\SOFTWARE\\Tailscale IPN', '/ve'], { encoding: 'utf8', timeout: 4000 });
+    const match = /REG_SZ\s+(.+)\s*$/m.exec(out);
+    if (match) return match[1].trim().replace(/\\+$/, '');
+  } catch {
+    // not installed per-machine, or reg unavailable
+  }
+  return undefined;
+}
+
 function tailscaleExecutables() {
+  if (tailscaleCandidatesCache) return tailscaleCandidatesCache;
   const candidates = [];
   if (process.env.TAILSCALE_EXE) candidates.push(process.env.TAILSCALE_EXE);
+  // PATH entry (`tailscale` on PATH is common for MSI installs).
+  candidates.push('tailscale');
+  const registryDir = process.platform === 'win32' ? registryTailscaleDir() : undefined;
+  if (registryDir) candidates.push(path.join(registryDir, 'tailscale.exe'));
   candidates.push(
     process.env.ProgramFiles ? path.join(process.env.ProgramFiles, 'Tailscale', 'tailscale.exe') : 'C:\\Program Files\\Tailscale\\tailscale.exe',
     process.env['ProgramFiles(x86)'] ? path.join(process.env['ProgramFiles(x86)'], 'Tailscale', 'tailscale.exe') : 'C:\\Program Files (x86)\\Tailscale\\tailscale.exe',
     'C:\\Program Files\\Tailscale\\tailscale.exe',
     'C:\\Program Files (x86)\\Tailscale\\tailscale.exe',
+    '/Applications/Tailscale.app/Contents/MacOS/Tailscale',
+    '/usr/bin/tailscale',
+    '/usr/local/bin/tailscale',
   );
-  return [...new Set(candidates)].filter((exe) => fs.existsSync(exe));
+  tailscaleCandidatesCache = [...new Set(candidates)].filter((exe) => exe === 'tailscale' || fs.existsSync(exe));
+  return tailscaleCandidatesCache;
 }
 
 function tailscaleIPv4() {
@@ -651,6 +673,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  log('fatal', error);
+  const detail = error && (error.stack || error.message) ? String(error.stack || error.message) : String(error);
+  log('fatal', detail);
   process.exitCode = 1;
 });

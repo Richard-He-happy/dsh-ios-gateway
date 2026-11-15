@@ -1,0 +1,31 @@
+{
+  "name": "dsh-ios-gateway",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Unofficial DeepSeek Harness plugin: expose the local DSH Web GUI to iPhone/iPad over Tailscale, with mobile layout adaptation.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Richard-He-happy/dsh-ios-gateway.git"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "src/host/plugin.js",
+    "gateway/**",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

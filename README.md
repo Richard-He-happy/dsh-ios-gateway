@@ -73,10 +73,32 @@ DSH 桌面端的 Web GUI 默认只监听 `127.0.0.1` 的随机端口，并有 Ho
 
 ---
 
-## 安装（Windows）
+## 安装
+
+有两种方式，核心网关代码完全相同，按需选择：
+
+### 方式一：作为 DSH 插件安装（推荐）
+
+安装成 DSH 插件后，**只要打开 DSH，网关就会自动启动**，不需要双击脚本，也不需要开机自启动。
+
+1. 在 DSH 中打开 **设置 → 插件管理**；
+2. 安装插件，来源填：
+   ```
+   github:Richard-He-happy/dsh-ios-gateway
+   ```
+   （或在“本地插件”里选择本仓库文件夹）
+3. 启用插件并重启 DSH（按插件管理页提示重载）；
+4. 手机/平板连接同一 tailnet 的 Tailscale，打开 `http://<电脑 Tailscale IP>:50108/`。
+5. **（可选）放行防火墙**：首次使用仍需双击 `scripts\allow-firewall.cmd` 放行 TCP 50108。
+
+插件模式下网关日志写在仓库/插件目录的 `gateway.log`；插件被禁用或 DSH 退出时，网关会自动关闭。
+
+> 如果之前用脚本方式安装过开机自启，请先运行 `scripts\uninstall-autostart.cmd`，避免和插件重复启动（插件检测到端口已被占用时会自动跳过）。
+
+### 方式二：独立脚本（传统方式）
 
 1. **下载**本仓库（Code → Download ZIP，或 `git clone`）并解压到任意目录。
-2. **（推荐）放行防火墙**：双击 `scripts\allow-firewall.cmd`，在 UAC 弹窗点「是」。
+2. **放行防火墙**：双击 `scripts\allow-firewall.cmd`，在 UAC 弹窗点「是」。
    - 放行入站 TCP `50108`，仅 Tailscale 设备可访问。
 3. **启动网关**：双击 `scripts\start-gateway.cmd`，看到 `gateway: running` 即成功。
 4. **获取电脑的 Tailscale 地址**：`tailscale ip -4`，例如 `100.x.y.z`。
@@ -97,6 +119,10 @@ iPhone / iPad 用 Safari 打开网关地址后，可以像原生 App 一样全�
 3. 选择「添加到主屏幕」→「添加」。
 
 ![添加到主屏幕](docs/add-to-home.png)
+
+添加完成后，主屏幕上会多出一个带有 DSH 官方图标的 App：
+
+![主屏幕效果](docs/phone-home-screen.png)
 
 - 图标与名称沿用 **DSH 官方**（DeepSeek Harness）；
 - 添加后全屏运行，没有地址栏，和普通 App 一样从主屏幕打开；
@@ -127,6 +153,9 @@ iPhone / iPad 用 Safari 打开网关地址后，可以像原生 App 一样全�
 
 ```
 dsh-ios-gateway/
+├─ package.json              # 同时是 DSH 插件包（dsh.bundle）
+├─ index.js / cordis.patch.yml
+├─ src/host/plugin.js        # DSH 插件 Host 半：随 DSH 启停网关
 ├─ gateway/
 │  ├─ mobile-gateway.cjs     # 网关：认证 / 反代 / 注入 / 自动发现
 │  ├─ mint-cookie.cjs        # 从本机 secret 签发 DSH 会话 cookie
@@ -134,7 +163,7 @@ dsh-ios-gateway/
 │  ├─ mobile.css             # 移动端布局适配
 │  ├─ manifest.webmanifest   # PWA manifest
 │  └─ icon-*.png / apple-touch-icon-harness.png
-├─ scripts/
+├─ scripts/                  # 传统脚本方式（可选）
 │  ├─ start-gateway.cmd / start-gateway.vbs
 │  ├─ stop-gateway.cmd / status-gateway.cmd
 │  ├─ install-autostart.cmd / uninstall-autostart.cmd
