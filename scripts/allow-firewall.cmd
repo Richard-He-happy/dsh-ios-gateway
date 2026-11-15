@@ -13,7 +13,7 @@ if %errorlevel% neq 0 (
   exit /b
 )
 
-set "RULE=DSH Mobile Gateway TCP %PORT%"
+set "RULE=DSH iOS Gateway TCP %PORT%"
 netsh advfirewall firewall delete rule name="%RULE%" >nul 2>&1
 netsh advfirewall firewall add rule name="%RULE%" dir=in action=allow protocol=TCP localport=%PORT% profile=any enable=yes
 echo.

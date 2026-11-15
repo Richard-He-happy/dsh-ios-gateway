@@ -1,16 +1,14 @@
-# DSH Mobile Gateway
+# DSH iOS Gateway
 
-> 在 iPhone / iPad 上远程使用 **DeepSeek Harness（DSH）** 桌面端 —— 通过 Tailscale 加密组网，把仅监听本机回环地址的 DSH Web GUI 暴露给你的手机/平板，并自动注入移动端布局适配。
+> 用 **iPhone / iPad** 远程使用 **DeepSeek Harness（DSH）** 桌面端 —— 通过 Tailscale 加密组网，把仅监听本机回环地址的 DSH Web GUI 暴露给 iOS 设备，并自动注入移动端布局适配。
 
-**不修改 DSH 安装包、不需要重启 DSH、手机端不需要登录或输入令牌。**
+**不修改 DSH 安装包、不需要重启 DSH、iOS 端不需要登录或输入令牌。**
 
-![手机首页](docs/phone-home.png)
+![手机竖屏对话](docs/phone-main.png)
 
-| 手机侧边栏（抽屉） | iPad |
+| 手机侧边栏（抽屉） | iPad 横屏 |
 |---|---|
-| ![手机抽屉](docs/phone-drawer.png) | ![iPad](docs/ipad-home.png) |
-
-> 截图中的工作区、会话、账号均已替换为示例数据。
+| ![手机抽屉](docs/phone-drawer.png) | ![iPad 横屏](docs/ipad-main.png) |
 
 ---
 
@@ -93,7 +91,7 @@ DSH 桌面端的 Web GUI 默认只监听 `127.0.0.1` 的随机端口，并有 Ho
 ## 文件结构
 
 ```
-dsh-mobile-gateway/
+dsh-ios-gateway/
 ├─ gateway/
 │  ├─ mobile-gateway.cjs     # 网关：认证 / 反代 / 注入 / 自动发现
 │  ├─ mint-cookie.cjs        # 从本机 secret 签发 DSH 会话 cookie
@@ -154,7 +152,7 @@ iOS 对 `black-translucent` 状态栏的视口计算问题；删除图标、重�
 1. `scripts\uninstall-autostart.cmd`（移除开机自启）
 2. `scripts\stop-gateway.cmd`（停止网关）
 3. 删除防火墙规则（可选）：管理员 PowerShell 执行
-   `netsh advfirewall firewall delete rule name="DSH Mobile Gateway TCP 50108"`
+   `netsh advfirewall firewall delete rule name="DSH iOS Gateway TCP 50108"`
 4. 删除本文件夹。
 
 ---
