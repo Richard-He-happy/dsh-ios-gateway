@@ -1,0 +1,393 @@
+/* ==========================================================================
+   DSH mobile adaptation (injected by the Tailscale mobile gateway)
+   Target: iPhone / iPad Safari (also works in other mobile browsers)
+   The selectors below come from the DSH web GUI's CSS-module class names;
+   unknown ones are harmless no-ops if a future build renames them.
+   ========================================================================== */
+
+/* ---------- 1. Viewport, overscroll, safe areas ---------- */
+
+html,
+body {
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Keep the app inside the notch / home-indicator / rounded-corner insets. */
+#root {
+  box-sizing: border-box;
+  height: 100%;
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}
+
+/* iOS home-screen web apps lay the web view out below the status bar already;
+   adding the top safe-area inset again creates a double gap plus a blank band
+   at the bottom (frame height = viewport - top - bottom insets). The class is
+   set from JS only when the standalone viewport really excludes the status bar. */
+/* iOS home-screen web apps: the status-bar style is latched when the icon is
+   added. With the old `black-translucent` latch the web view draws below the
+   status bar but reports a 59pt-shorter viewport, so CSS cannot fill the last
+   59pt. Keep the content below the status bar (title bar visible) and leave the
+   system gap; re-adding the icon with the current `default` style removes it. */
+html.dsh-m-vp-below-statusbar #root {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Touch ergonomics: no double-tap zoom delay, no accidental text selection on
+   controls; text areas keep selection enabled. */
+@media (pointer: coarse) {
+  button,
+  [role='button'],
+  [role='menuitem'],
+  a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* iOS zooms any focused form field whose font-size is below 16px. */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  .RlGAzG_input {
+    font-size: 16px !important;
+    line-height: 22px !important;
+  }
+}
+
+/* ---------- 2. Phone layout: drawer sidebar + full-screen right panel ---------- */
+
+@media (max-width: 600px) {
+  /* The icon rail is hidden on phones: the conversation gets the full width and
+     a floating menu button opens the sidebar as a drawer. */
+  .BynINW_frame {
+    grid-template-columns: 0 minmax(0, 1fr) minmax(0, 0px) !important;
+  }
+
+  .BynINW_handle {
+    display: none !important;
+  }
+
+  /* The drawer leaves the grid flow, so pin each column explicitly and keep the
+     conversation in the full-width centre column. */
+  .BynINW_sidebarCol {
+    grid-column: 1 !important;
+    display: none !important;
+  }
+
+  .BynINW_centerCol {
+    grid-column: 2 !important;
+  }
+
+  .BynINW_rightbarCol {
+    grid-column: 3 !important;
+  }
+
+  /* Expanded sidebar becomes an overlay drawer above the conversation.
+     DSH drops the data-sidebar-collapsed attribute entirely when expanded. */
+  .BynINW_frame:not([data-sidebar-collapsed]) .BynINW_sidebarCol {
+    display: block !important;
+    position: fixed !important;
+    top: env(safe-area-inset-top);
+    bottom: env(safe-area-inset-bottom);
+    left: env(safe-area-inset-left);
+    width: min(86vw, 340px);
+    z-index: 60;
+    border-right: none !important;
+    box-shadow: 8px 0 32px rgb(0 0 0 / 22%);
+  }
+
+  /* Floating "open sidebar" button, top-left over the header. */
+  .dsh-mobile-menu {
+    display: flex;
+    position: fixed;
+    top: calc(8px + env(safe-area-inset-top));
+    left: calc(8px + env(safe-area-inset-left));
+    z-index: 45;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 0.5px solid var(--dsw-alias-border-l3, rgb(0 0 0 / 12%));
+    background: var(--dsw-alias-bg-layer-2, rgb(255 255 255 / 90%));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--dsw-alias-label-primary, #0f1115);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  /* Right sidebar (files / terminal / previews) becomes a full-screen sheet. */
+  .BynINW_frame:not([data-rightbar-collapsed]) .BynINW_rightbarCol {
+    position: fixed !important;
+    inset: 0;
+    z-index: 70;
+    width: auto !important;
+    background: var(--dsw-alias-bg-base);
+  }
+
+  /* Prefer the full width for chat content on narrow screens. */
+  .Dc7zOa_header {
+    padding: 8px 12px 0 52px !important;
+  }
+
+  .Dc7zOa_headerCorner {
+    margin-right: 0 !important;
+  }
+
+  /* Free up header room for the session title: keep the "more actions" menu and
+     the subagent selector, drop the desktop-only open-in-app split button and
+     the mode/team badges. */
+  .Dc7zOa_headerUtilities .WgQWqa_menuAnchor {
+    display: none !important;
+  }
+
+  .Dc7zOa_headerUtilities {
+    margin-left: 4px !important;
+  }
+
+  .Dc7zOa_headerActions {
+    gap: 4px !important;
+  }
+
+  .Dc7zOa_headerActions .EBLgjq_root,
+  .Dc7zOa_headerActions .b06baG_label {
+    display: none !important;
+  }
+
+  .Dc7zOa_crumb {
+    max-width: 56vw !important;
+  }
+
+  .Dc7zOa_composerHero {
+    padding-bottom: 16px !important;
+  }
+
+  .Dc7zOa_composerSeat {
+    --dsh-composer-text-max-height: 40vh;
+  }
+
+  /* The hero option row (workspace / preset / API chip / model) may not fit on
+     narrow phones: allow it to wrap instead of clipping. */
+  .Dc7zOa_heroOptions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* Slightly larger thumb targets without reflowing the toolbar. */
+  .RlGAzG_primary {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .Dc7zOa_header button,
+  .Dc7zOa_header [role='button'],
+  .RlGAzG_add,
+  .wq12jW_trigger,
+  .RlGAzG_seat > button {
+    min-height: 36px;
+  }
+
+  /* Touch targets in the icon rail. */
+  ._2H3hWW_collapsed ._2H3hWW_iconButton,
+  ._2H3hWW_collapsed ._2H3hWW_newSession {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Settings becomes a single column: nav is a horizontal tab strip. */
+  .wCInkW_overlay {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    box-sizing: border-box;
+  }
+
+  .wCInkW_panel {
+    flex-direction: column;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    border-radius: 16px;
+  }
+
+  .wCInkW_nav {
+    flex-direction: row;
+    align-items: center;
+    width: auto !important;
+    gap: 8px;
+    padding: 10px 12px 6px;
+    overflow-x: auto;
+    border-bottom: 0.5px solid var(--dsw-alias-border-l3);
+    scrollbar-width: none;
+  }
+
+  .wCInkW_nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .wCInkW_navTitle {
+    display: none;
+  }
+
+  .wCInkW_navList {
+    flex-direction: row;
+    overflow: visible;
+  }
+
+  .wCInkW_navCell {
+    flex: 0 0 auto;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+  }
+
+  .wCInkW_content {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .wCInkW_header {
+    height: 44px;
+    padding: 8px 12px 4px;
+  }
+
+  .wCInkW_options {
+    padding: 0 14px 20px;
+  }
+}
+
+/* ---------- 3. Tablet / touch polish (no structural change) ---------- */
+
+@media (pointer: coarse) and (min-width: 601px) {
+  .Dc7zOa_header button,
+  .Dc7zOa_header [role='button'],
+  .RlGAzG_primary,
+  .RlGAzG_add,
+  .wq12jW_trigger {
+    min-height: 34px;
+  }
+
+  .wCInkW_close {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* ---------- 4. Drawer scrim ---------- */
+
+.dsh-mobile-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgb(0 0 0 / 32%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease-out;
+}
+
+.dsh-mobile-scrim[data-show='true'] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- 5. iOS keyboard: shrink the app to the visual viewport ---------- */
+
+html.dsh-m-keyboard #root {
+  height: var(--dsh-m-vv-height, 100%) !important;
+  transform: translateY(var(--dsh-m-vv-offset, 0));
+  padding-bottom: 0 !important;
+  transition: none;
+}
+
+html.dsh-m-keyboard .BynINW_frame {
+  height: 100% !important;
+}
+
+/* Remove the desktop-style bottom breathing room while the keyboard is up so
+   the composer sits directly above the keyboard. */
+html.dsh-m-keyboard .Dc7zOa_composerSeat {
+  padding-bottom: 0 !important;
+}
+
+html.dsh-m-keyboard .Dc7zOa_composerHero {
+  padding-bottom: 6px !important;
+}
+
+html.dsh-m-keyboard .Dc7zOa_composerStack {
+  gap: 4px;
+}
+
+/* ---------- 6. "Add to Home Screen" hint (iOS Safari only) ---------- */
+
+.dsh-install-tip {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  top: calc(52px + env(safe-area-inset-top));
+  z-index: 900;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 0.5px solid var(--dsw-alias-border-l3, rgb(0 0 0 / 12%));
+  background: var(--dsw-alias-bg-layer-3, #fff);
+  color: var(--dsw-alias-label-primary, #0f1115);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 18%);
+  font-size: 13px;
+  line-height: 19px;
+  animation: dsh-install-tip-in 0.25s ease-out;
+}
+
+.dsh-install-tip[data-hide='true'] {
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+/* Do not let the first-run hint cover an opened drawer. */
+.dsh-mobile-scrim[data-show='true'] ~ .dsh-install-tip {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dsh-install-tip b {
+  font-weight: 600;
+}
+
+.dsh-install-tip-sub {
+  color: var(--dsw-alias-label-tertiary, #6b7280);
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.dsh-install-tip-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin: -4px -6px 0 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+  font-size: 20px;
+  line-height: 24px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+@keyframes dsh-install-tip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}

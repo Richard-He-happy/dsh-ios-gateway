@@ -1,0 +1,13 @@
+{
+  "name": "DeepSeek Harness",
+  "short_name": "DeepSeek Harness",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fafa",
+  "theme_color": "#f9fafa",
+  "icons": [
+    { "src": "/__dsh_mobile/icon-harness-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/__dsh_mobile/icon-harness-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

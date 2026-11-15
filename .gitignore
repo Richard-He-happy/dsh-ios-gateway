@@ -1,0 +1,11 @@
+# Runtime / local data
+gateway.log
+*.log
+
+# Node
+node_modules/
+
+# Local tool profiles
+.edge-profile-*/
+.DS_Store
+Thumbs.db
