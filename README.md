@@ -4,6 +4,8 @@
 
 **不修改 DSH 安装包、不需要重启 DSH、iOS 端不需要登录或输入令牌。**
 
+> ⚠️ 非官方社区项目：与 **DeepSeek**、**Tailscale Inc.** 均无关联。Tailscale 仅作为可选传输层，需自行安装并遵守其条款；详见 [第三方声明](THIRD-PARTY-NOTICES.md)。
+
 ![手机竖屏对话](docs/phone-main.png)
 
 | 手机侧边栏（抽屉） | iPad 横屏 |
@@ -86,6 +88,24 @@ DSH 桌面端的 Web GUI 默认只监听 `127.0.0.1` 的随机端口，并有 Ho
 
 ---
 
+## 变成桌面 App（添加到主屏幕）
+
+iPhone / iPad 用 Safari 打开网关地址后，可以像原生 App 一样全屏使用，无需安装任何 App：
+
+1. Safari 打开网关地址（例如 `http://100.x.y.z:50108/`）；
+2. 点底部「分享」按钮（方框 + 向上箭头）；
+3. 选择「添加到主屏幕」→「添加」。
+
+![添加到主屏幕](docs/add-to-home.png)
+
+- 图标与名称沿用 **DSH 官方**（DeepSeek Harness）；
+- 添加后全屏运行，没有地址栏，和普通 App 一样从主屏幕打开；
+- 建议使用 HTTPS（`setup-serve.cmd` 生成的 `https://<机器名>.<tailnet>.ts.net/`）地址添加，体验最佳；
+- 如果之前添加过旧地址 / 旧图标：先删除旧图标，再用新地址重新添加一次；
+- 主屏幕 App 与 Safari 共用网关的自动认证，不需要重复登录。
+
+---
+
 ## 配置项（环境变量）
 
 | 变量 | 默认值 | 说明 |
@@ -120,7 +140,9 @@ dsh-ios-gateway/
 │  ├─ install-autostart.cmd / uninstall-autostart.cmd
 │  ├─ allow-firewall.cmd
 │  └─ setup-serve.cmd
-└─ docs/                     # 截图
+├─ docs/                     # 截图与示意图
+├─ THIRD-PARTY-NOTICES.md    # 第三方软件与商标声明
+└─ LICENSE                   # MIT（仅覆盖本项目代码）
 ```
 
 ---
@@ -172,11 +194,14 @@ iOS 对 `black-translucent` 状态栏的视口计算问题；删除图标、重�
 
 ---
 
-## 免责声明
+## 免责声明与第三方声明
 
-- 本项目是**非官方**社区工具，与 DeepSeek 官方无关；
-- 依赖 DSH 桌面端的内部实现（浏览器会话 cookie、回环端口、Host 校验），DSH 升级后可能失效；
-- 使用风险自负，请自行评估数据与访问安全。
+- 本项目是**非官方**社区工具，**与 DeepSeek、Tailscale Inc. 均无关联**，也未获得其背书或赞助；
+- **Tailscale** 仅作为可选的网络传输方式：本项目不包含、不修改、不再分发任何 Tailscale 代码，只调用用户自行安装的 Tailscale CLI（`tailscale ip` / `tailscale serve`）。使用 Tailscale 需遵守其自身服务条款与开源许可；
+- “Tailscale”“DeepSeek”“DeepSeek Harness”等名称与图标归各自权利人所有，本项目仅在描述用途与标识用户本机应用时使用；
+- 本项目依赖 DSH 桌面端的内部实现（浏览器会话 cookie、回环端口、Host 校验），DSH 升级后可能失效；
+- MIT 许可仅适用于本仓库自身代码，不覆盖任何第三方软件、名称或商标；详见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)；
+- 使用风险自负，请自行评估数据与访问安全。若权利人认为本项目中的名称/图标使用不当，欢迎提 issue，我们会及时调整。
 
 ## License
 
