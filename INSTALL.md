@@ -13,7 +13,7 @@
 ```text
 帮我安装 DSH iOS Gateway（让 iPhone/iPad 远程使用 DSH 的开源插件）：
 1. 检查电脑是否已安装 Tailscale；如果没有，请从 Tailscale 官网下载 Windows 官方安装包并安装（我会点一次 UAC 允许），装好后提醒我登录 Tailscale
-2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway，按仓库里的 INSTALL.md 把它安装为 DSH 插件并启用
+2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway，按仓库里的 INSTALL.md 把它安装为 DSH 插件并启用（优先用 DSH 插件管理；不要用记事本 / PowerShell 直接改 profile 的 package.json，UTF-8 BOM 会导致 DSH 打不开）
 3. 放行 Windows 防火墙 TCP 50108
 4. 安装完成后，把手机访问网址和“添加到主屏幕”的步骤告诉我
 5. 自检：http://127.0.0.1:50108/__dsh_mobile/health 返回正常
@@ -61,6 +61,12 @@ DSH 会帮你下载、安装插件、放行防火墙，并给出手机访问地�
 6. **添加到主屏幕**：Safari 分享 → 添加到主屏幕 → 添加。
 
 > 插件方式和脚本方式二选一；插件检测到端口已被占用时会自动跳过，不会重复启动。
+
+> ⚠️ **安全提示（避免 DSH 打不开）**
+> 不要用记事本、或 Windows PowerShell 5.1 的 `Set-Content` 直接修改 DSH profile 的 `package.json`：
+> 它们会写入 **UTF-8 BOM**，DSH 启动时会报 `Unexpected token ... is not valid JSON` 并无法打开。
+> 需要手动配置时，请双击 `scripts\install-plugin.cmd`：它会备份、以无 BOM 方式写入、校验 JSON、创建链接；
+> 如果已经出现该报错，双击 `scripts\fix-profile-bom.cmd` 修复后重启 DSH。
 
 ### 可选：无端口 HTTPS
 
@@ -120,6 +126,17 @@ DSH 会帮你下载、安装插件、放行防火墙，并给出手机访问地�
 - 是否**重启过 DSH**？
 - DSH 设置 → 插件管理，确认 `dsh-ios-gateway` 已启用；
 - 打开 `http://127.0.0.1:50108/__dsh_mobile/health` 确认网关已启动。
+
+### DSH 打不开：`Unexpected token ... is not valid JSON`
+
+原因：DSH profile 的 `package.json` 开头带了 **UTF-8 BOM**（常见于用记事本或 PowerShell 5.1 的 `Set-Content` 改文件）。
+
+修复：
+
+1. 双击 `scripts\fix-profile-bom.cmd`（自动备份、去掉 BOM、校验 JSON）；
+2. 重启 DSH。
+
+以后手动安装请用 `scripts\install-plugin.cmd`，不要直接编辑 profile JSON。
 
 ### DSH 升级后界面样式异常
 

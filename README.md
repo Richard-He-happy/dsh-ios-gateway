@@ -84,7 +84,7 @@ DSH 桌面端的 Web GUI 默认只监听 `127.0.0.1` 的随机端口，并有 Ho
 ```text
 帮我安装 DSH iOS Gateway（让 iPhone/iPad 远程使用 DSH 的开源插件）：
 1. 检查电脑是否已安装 Tailscale；如果没有，请从 Tailscale 官网下载 Windows 官方安装包并安装（我会点一次 UAC 允许），装好后提醒我登录 Tailscale
-2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway，按仓库里的 INSTALL.md 把它安装为 DSH 插件并启用
+2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway，按仓库里的 INSTALL.md 把它安装为 DSH 插件并启用（优先用 DSH 插件管理；不要用记事本 / PowerShell 直接改 profile 的 package.json，UTF-8 BOM 会导致 DSH 打不开）
 3. 放行 Windows 防火墙 TCP 50108
 4. 安装完成后，把手机访问网址和“添加到主屏幕”的步骤告诉我
 5. 自检：http://127.0.0.1:50108/__dsh_mobile/health 返回正常
@@ -179,6 +179,10 @@ dsh-ios-gateway/
 ---
 
 ## 常见问题
+
+**DSH 打不开：`Unexpected token ... is not valid JSON`？**
+DSH profile 的 `package.json` 被写入了 **UTF-8 BOM**（常见于用记事本 / PowerShell 5.1 的 `Set-Content` 改文件）。这不是插件本身的代码问题，而是配置文件写法问题。
+修复：双击 `scripts\fix-profile-bom.cmd`（自动备份、去 BOM、校验 JSON），然后重启 DSH。以后手动安装请用 `scripts\install-plugin.cmd`。
 
 **手机突然连不上，但开关一下飞行模式就好了？**
 这是 iOS + Tailscale 的已知现象：锁屏休眠、Wi-Fi ↔ 5G 切换后，Tailscale 数据通道可能没有及时恢复。**不是本工具或安装的问题**，也不是所有人都会遇到，但网络切换频繁时更常见。
