@@ -11,13 +11,15 @@
 复制下面整段，直接发给你的 **DSH 对话**（需要给 DSH 完整的文件/命令权限）：
 
 ```text
-帮我安装 DSH iOS Gateway（一个让 iPhone/iPad 远程使用 DSH 的开源插件）：
-1. 从 GitHub 获取仓库：Richard-He-happy/dsh-ios-gateway
-2. 按仓库里的 INSTALL.md，把它安装为 DSH 插件并启用
-3. 放行 Windows 防火墙 TCP 50108（需要管理员权限）
+帮我安装 DSH iOS Gateway（让 iPhone/iPad 远程使用 DSH 的开源插件）：
+1. 检查电脑是否已安装 Tailscale；如果没有，请从 Tailscale 官网下载 Windows 官方安装包并安装（我会点一次 UAC 允许），装好后提醒我登录 Tailscale
+2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway，按仓库里的 INSTALL.md 把它安装为 DSH 插件并启用
+3. 放行 Windows 防火墙 TCP 50108
 4. 安装完成后，把手机访问网址和“添加到主屏幕”的步骤告诉我
 5. 自检：http://127.0.0.1:50108/__dsh_mobile/health 返回正常
 ```
+
+> 电脑端 Tailscale 也可以让 DSH 负责下载安装；你只需要点一次 UAC「是」，然后在 Tailscale 里登录自己的账号。
 
 DSH 会帮你下载、安装插件、放行防火墙，并给出手机访问地址。
 
