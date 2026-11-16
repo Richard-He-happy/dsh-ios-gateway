@@ -55,10 +55,10 @@ function log(...args) {
 // Tailscale DERP relay that can take minutes on iOS, so the gateway compresses
 // cacheable assets itself and keeps the gzipped copy in memory.
 const GZIP_CACHE_MAX_BYTES = 96 * 1024 * 1024;
-// Temporarily disabled: Safari 18.7 home-screen / tab loads showed white screens
-// while assets were served compressed. Reliability first; re-enable only after
-// verifying on device.
-const ENABLE_GZIP = false;
+// Enabled by default: the DSH plugin bundle (~9 MB) otherwise times out on iOS
+// over slow Tailscale relay links before the app can boot. Responses are
+// streamed and cached; set to false to debug a device-specific white screen.
+const ENABLE_GZIP = true;
 const gzipCache = new Map();
 let gzipCacheBytes = 0;
 
@@ -618,6 +618,12 @@ server.on('upgrade', (req, socket, head) => {
       upstreamSocket.pipe(socket);
       socket.pipe(upstreamSocket);
     });
+    // Keep the long-lived WebSocket responsive and let the OS detect dead peers
+    // on flaky relay links instead of leaving the phone on a half-open socket.
+    socket.setNoDelay(true);
+    upstreamSocket.setNoDelay(true);
+    socket.setKeepAlive(true, 30000);
+    upstreamSocket.setKeepAlive(true, 30000);
     upstreamSocket.on('error', (error) => {
       log('ws upstream error', error.message);
       socket.destroy();
