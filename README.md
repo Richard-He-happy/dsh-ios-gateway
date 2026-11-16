@@ -14,6 +14,8 @@
 |---|---|
 | ![手机抽屉](docs/phone-drawer.png) | ![iPad 横屏](docs/ipad-main.png) |
 
+> 🚀 **安装只要一句话**：把 [「安装」](#安装最简单把这段话发给-dsh) 里的提示词复制发给 DSH，它会自动装好；然后手机打开网址 → 分享 → 添加到主屏幕。
+
 ---
 
 ## 核心卖点
@@ -75,42 +77,34 @@ DSH 桌面端的 Web GUI 默认只监听 `127.0.0.1` 的随机端口，并有 Ho
 
 ---
 
-## 安装
+## 安装（最简单：把这段话发给 DSH）
 
-> 完整、从零开始（含 DSH / Tailscale 准备、插件安装、防火墙、手机端、主屏幕、HTTPS、验证与卸载）的步骤请看 **[INSTALL.md](INSTALL.md)**。下面是快速版。
+复制下面整段，直接发给你的 **DSH 对话**（需要给 DSH 完整的文件/命令权限）：
 
-有两种方式，核心网关代码完全相同，按需选择：
+```text
+帮我安装 DSH iOS Gateway（一个让 iPhone/iPad 远程使用 DSH 的开源插件）：
+1. 从 GitHub 获取仓库：Richard-He-happy/dsh-ios-gateway
+2. 按仓库里的 INSTALL.md，把它安装为 DSH 插件并启用
+3. 放行 Windows 防火墙 TCP 50108（需要管理员权限）
+4. 安装完成后，把手机访问网址和“添加到主屏幕”的步骤告诉我
+5. 自检：http://127.0.0.1:50108/__dsh_mobile/health 返回正常
+```
 
-### 方式一：作为 DSH 插件安装（推荐）
+装好之后只需要 3 步：
 
-安装成 DSH 插件后，**只要打开 DSH，网关就会自动启动**，不需要双击脚本，也不需要开机自启动。
+1. 手机 / iPad 连上同一 Tailscale；
+2. 打开 DSH 给你的网址（注意带 `:50108`）；
+3. Safari → 分享 → **添加到主屏幕**，以后从主屏幕打开就是全屏 App。
 
-1. 在 DSH 中打开 **设置 → 插件管理**；
-2. 安装插件，来源填：
-   ```
-   github:Richard-He-happy/dsh-ios-gateway
-   ```
-   （或在“本地插件”里选择本仓库文件夹）
-3. 启用插件并重启 DSH（按插件管理页提示重载）；
-4. 手机/平板连接同一 tailnet 的 Tailscale，打开 `http://<电脑 Tailscale IP>:50108/`。
-5. **（可选）放行防火墙**：首次使用仍需双击 `scripts\allow-firewall.cmd` 放行 TCP 50108。
+> 📡 **手机突然连不上？** 先**开关一下飞行模式**，或断开重连 Tailscale，再打开一次（iOS + Tailscale 的常见现象，不是安装失败，详见 FAQ）。
 
-插件模式下网关日志写在仓库/插件目录的 `gateway.log`；插件被禁用或 DSH 退出时，网关会自动关闭。
+### 不想用 DSH 自动安装？手动 3 步
 
-> 如果之前用脚本方式安装过开机自启，请先运行 `scripts\uninstall-autostart.cmd`，避免和插件重复启动（插件检测到端口已被占用时会自动跳过）。
+1. 下载本仓库并解压；
+2. 管理员运行 `scripts\allow-firewall.cmd`；双击 `scripts\start-gateway.cmd`；
+3. 手机打开 `http://<电脑 Tailscale IP>:50108/`，再按上面的方式添加到主屏幕。
 
-### 方式二：独立脚本（传统方式）
-
-1. **下载**本仓库（Code → Download ZIP，或 `git clone`）并解压到任意目录。
-2. **放行防火墙**：双击 `scripts\allow-firewall.cmd`，在 UAC 弹窗点「是」。
-   - 放行入站 TCP `50108`，仅 Tailscale 设备可访问。
-3. **启动网关**：双击 `scripts\start-gateway.cmd`，看到 `gateway: running` 即成功。
-4. **获取电脑的 Tailscale 地址**：`tailscale ip -4`，例如 `100.x.y.z`。
-5. **手机/平板打开**：`http://100.x.y.z:50108/`
-6. **（可选）添加到主屏幕**：Safari → 分享 → 添加到主屏幕。之后就像 App 一样全屏使用。
-7. **（可选）开机自启**：双击 `scripts\install-autostart.cmd`。
-8. **（可选）无端口 HTTPS**：双击 `scripts\setup-serve.cmd`，得到 `https://<机器名>.<tailnet>.ts.net/`。
-   - 需在 Tailscale 管理后台一次性启用 **Serve** 与 **HTTPS Certificates**（DNS 页面）。
+更细的说明（DSH 插件安装、HTTPS、验证、卸载、FAQ）见 **[INSTALL.md](INSTALL.md)**。
 
 ---
 
@@ -181,6 +175,10 @@ dsh-ios-gateway/
 ---
 
 ## 常见问题
+
+**手机突然连不上，但开关一下飞行模式就好了？**
+这是 iOS + Tailscale 的已知现象：锁屏休眠、Wi-Fi ↔ 5G 切换后，Tailscale 数据通道可能没有及时恢复。**不是本工具或安装的问题**，也不是所有人都会遇到，但网络切换频繁时更常见。
+处理：开关一次飞行模式，或断开/重连 Tailscale，再打开网址；建议在手机 Tailscale 里开启 **VPN On Demand** 自动重连。
 
 **打不开 / 白屏**
 1. 先确认手机上的 Tailscale 显示已连接（可开关一次飞行模式重连）；
