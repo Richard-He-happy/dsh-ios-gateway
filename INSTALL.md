@@ -21,6 +21,8 @@
 
 DSH 会帮你下载、安装插件、放行防火墙，并给出手机访问地址。
 
+![一句话安装](docs/one-prompt-install.png)
+
 装好后：
 
 1. 手机 / iPad 连上同一 Tailscale；
@@ -91,7 +93,7 @@ DSH 会帮你下载、安装插件、放行防火墙，并给出手机访问地�
 - 手机 Tailscale 里开启 **VPN On Demand**（自动重连）；
 - 出门前先确认手机 Tailscale 处于已连接状态。
 
-参考：Tailscale 官方 VPN On Demand 文档与 iOS 连接问题 issue。
+参考：[Tailscale VPN On Demand](https://tailscale.com/docs/features/client/ios-vpn-on-demand)、[tailscale/tailscale#10821](https://github.com/tailscale/tailscale/issues/10821)。
 
 ### 地址打不开 / 一直白屏
 
