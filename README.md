@@ -6,6 +6,8 @@
 
 > ⚠️ 非官方社区项目：与 **DeepSeek**、**Tailscale Inc.** 均无关联。Tailscale 仅作为可选传输层，需自行安装并遵守其条款；详见 [第三方声明](THIRD-PARTY-NOTICES.md)。
 
+> 📖 **从零开始的完整安装步骤：[INSTALL.md](INSTALL.md)** —— 包含 DSH 插件安装、Tailscale、防火墙、手机打开、添加到主屏幕、HTTPS、验证与卸载。
+
 ![手机竖屏对话](docs/phone-main.png)
 
 | 手机侧边栏（抽屉） | iPad 横屏 |
@@ -74,6 +76,8 @@ DSH 桌面端的 Web GUI 默认只监听 `127.0.0.1` 的随机端口，并有 Ho
 ---
 
 ## 安装
+
+> 完整、从零开始（含 DSH / Tailscale 准备、插件安装、防火墙、手机端、主屏幕、HTTPS、验证与卸载）的步骤请看 **[INSTALL.md](INSTALL.md)**。下面是快速版。
 
 有两种方式，核心网关代码完全相同，按需选择：
 
