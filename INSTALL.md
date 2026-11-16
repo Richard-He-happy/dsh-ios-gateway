@@ -13,7 +13,7 @@
 ```text
 帮我安装 DSH iOS Gateway（让 iPhone/iPad 远程使用 DSH 的开源插件）：
 1. 检查电脑是否已安装 Tailscale；如果没有，请从 Tailscale 官网下载 Windows 官方安装包并安装（我会点一次 UAC 允许），装好后提醒我登录 Tailscale
-2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway，按仓库里的 INSTALL.md 把它安装为 DSH 插件并启用（优先用 DSH 插件管理；不要用记事本 / PowerShell 直接改 profile 的 package.json，UTF-8 BOM 会导致 DSH 打不开）
+2. 从 GitHub 获取仓库 Richard-He-happy/dsh-ios-gateway。安装插件时：优先用 DSH 插件管理；如果必须手动配置，只运行仓库里的 scripts\install-plugin.cmd（它安全写入、不会产生 BOM），禁止用记事本 / PowerShell 直接改 profile 的 package.json
 3. 放行 Windows 防火墙 TCP 50108
 4. 安装完成后，把手机访问网址和“添加到主屏幕”的步骤告诉我
 5. 自检：http://127.0.0.1:50108/__dsh_mobile/health 返回正常
